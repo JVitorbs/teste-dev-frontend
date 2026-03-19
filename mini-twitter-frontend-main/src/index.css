@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 500px at 15% -10%, rgba(29, 155, 240, 0.14), transparent 60%),
+    linear-gradient(180deg, #f4f9fd 0%, #eef4f8 100%);
+  color: #0f172a;
+}
+
+#root {
+  min-height: 100vh;
+}

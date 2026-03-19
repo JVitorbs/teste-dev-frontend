@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: ./mini-twitter-backend-main
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mini-twitter-backend-main:/app
+      - /app/node_modules
+    environment:
+      - JWT_SECRET=sua-chave-secreta-aqui
+    restart: always
+
+  web:
+    build:
+      context: ./mini-twitter-frontend-main
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./mini-twitter-frontend-main:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - api
+    restart: always
