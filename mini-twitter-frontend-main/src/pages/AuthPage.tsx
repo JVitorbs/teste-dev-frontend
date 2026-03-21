@@ -51,7 +51,7 @@ export const AuthPage = () => {
     mutationFn: authService.login,
     onSuccess: (data) => {
       setSession(data.token, data.user);
-      navigate("/", { replace: true });
+      navigate("/timeline", { replace: true });
     },
     onError: (error) => {
       setApiMessage(getApiError(error, "Credenciais invalidas."));
