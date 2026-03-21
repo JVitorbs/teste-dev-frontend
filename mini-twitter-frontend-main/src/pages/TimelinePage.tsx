@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import type { PostSchema } from "../schemas/post";
 import type { PostsResponse } from "../types/api";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import { getApiError } from "../lib/error";
 import { authService } from "../services/auth.service";
 import { postService } from "../services/post.service";
 import { PostComposer } from "../components/PostComposer";
 import { PostCard } from "../components/PostCard";
+import { ThemeToggleButton } from "../components/ThemeToggleButton";
 import { Heart, X } from "lucide-react";
 
 const queryKey = (search: string) => ["posts", search] as const;
@@ -24,7 +24,6 @@ export const TimelinePage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user, isAuthenticated, clearSession } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   const postsQuery = useInfiniteQuery({
     queryKey: queryKey(search),
@@ -195,12 +194,7 @@ export const TimelinePage = () => {
             <div className="flex items-center justify-between gap-3">
               <h1 className="text-xl font-extrabold">Timeline</h1>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleTheme}
-                  className="rounded-full border border-[var(--tw-border)] bg-[var(--tw-surface)] px-3 py-1 text-xs font-bold"
-                >
-                  {theme === "light" ? "Escuro" : "Claro"}
-                </button>
+                <ThemeToggleButton />
                 {!isAuthenticated ? (
                   <button
                     onClick={() => navigate("/auth")}
@@ -293,7 +287,7 @@ export const TimelinePage = () => {
 
       {expandedPost ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm md:items-center md:p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm md:p-6"
           onClick={() => setExpandedPostId(null)}
         >
           <article
