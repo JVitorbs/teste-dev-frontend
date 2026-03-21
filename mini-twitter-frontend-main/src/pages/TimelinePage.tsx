@@ -11,6 +11,7 @@ import { authService } from "../services/auth.service";
 import { postService } from "../services/post.service";
 import { PostComposer } from "../components/PostComposer";
 import { PostCard } from "../components/PostCard";
+import { Heart, X } from "lucide-react";
 
 const queryKey = (search: string) => ["posts", search] as const;
 
@@ -18,6 +19,7 @@ export const TimelinePage = () => {
   const [search, setSearch] = useState("");
   const [message, setMessage] = useState("");
   const [likedByMe, setLikedByMe] = useState<Record<number, boolean>>({});
+  const [expandedPostId, setExpandedPostId] = useState<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -124,6 +126,10 @@ export const TimelinePage = () => {
   });
 
   const allPosts = useMemo(() => postsQuery.data?.pages.flatMap((page) => page.posts) ?? [], [postsQuery.data]);
+  const expandedPost = useMemo(
+    () => allPosts.find((post) => post.id === expandedPostId) ?? null,
+    [allPosts, expandedPostId],
+  );
 
   useEffect(() => {
     const node = sentinelRef.current;
@@ -241,15 +247,17 @@ export const TimelinePage = () => {
             {postsQuery.isLoading ? <p className="p-5 text-sm text-[var(--tw-muted)]">Carregando posts...</p> : null}
             {postsQuery.isError ? <p className="p-5 text-sm text-[var(--tw-danger)]">{getApiError(postsQuery.error, "Erro ao carregar timeline.")}</p> : null}
 
-            {allPosts.map((post) => (
+            {allPosts.map((post, index) => (
               <PostCard
                 key={post.id}
                 post={post}
                 currentUser={user}
                 canInteract={isAuthenticated}
+                animationDelayMs={Math.min(420, (index % 12) * 45)}
                 likeLoading={likeMutation.isPending && likeMutation.variables?.postId === post.id}
                 liked={likedByMe[post.id] ?? false}
                 onRequireAuth={() => navigate("/auth")}
+                onOpenPost={(postId) => setExpandedPostId(postId)}
                 onToggleLike={(postId, currentLiked) => likeMutation.mutate({ postId, currentLiked })}
                 onDelete={(postId) => deleteMutation.mutate(postId)}
                 onUpdate={async (postId, payload) => updateMutation.mutateAsync({ postId, payload })}
@@ -282,6 +290,62 @@ export const TimelinePage = () => {
           </div>
         </aside>
       </div>
+
+      {expandedPost ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm md:items-center md:p-6"
+          onClick={() => setExpandedPostId(null)}
+        >
+          <article
+            className="modal-pop w-full max-w-2xl rounded-t-3xl border border-[var(--tw-border)] bg-[var(--tw-surface)] p-4 shadow-2xl md:rounded-3xl md:p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-extrabold md:text-2xl">{expandedPost.title}</h2>
+                <p className="mt-1 text-xs text-[var(--tw-muted)]">
+                  por {expandedPost.authorName} • {new Date(expandedPost.createdAt).toLocaleString("pt-BR", { dateStyle: "medium", timeStyle: "short" })}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setExpandedPostId(null)}
+                className="rounded-full border border-[var(--tw-border)] p-2 text-[var(--tw-muted)] transition hover:bg-[var(--tw-surface-soft)]"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </header>
+
+            <p className="mb-4 text-sm leading-7 md:text-base">{expandedPost.content}</p>
+
+            {expandedPost.image ? (
+              <img
+                src={expandedPost.image}
+                alt={expandedPost.title}
+                className="mb-4 max-h-[60vh] w-full rounded-2xl object-cover"
+              />
+            ) : null}
+
+            <button
+              type="button"
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-bold transition ${
+                likedByMe[expandedPost.id] ? "bg-rose-500 text-white" : "border border-[var(--tw-border)] text-[var(--tw-muted)] hover:text-rose-500"
+              }`}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate("/auth");
+                  return;
+                }
+
+                likeMutation.mutate({ postId: expandedPost.id, currentLiked: likedByMe[expandedPost.id] ?? false });
+              }}
+            >
+              <Heart className={`mr-2 h-4 w-4 ${likedByMe[expandedPost.id] ? "animate-heart-pop fill-current" : ""}`} />
+              {likedByMe[expandedPost.id] ? "Descurtir" : "Curtir"} • {expandedPost.likesCount}
+            </button>
+          </article>
+        </div>
+      ) : null}
     </main>
   );
 };
