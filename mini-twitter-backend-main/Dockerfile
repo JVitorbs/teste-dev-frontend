@@ -16,5 +16,5 @@ RUN touch db.sqlite
 # Expose the port Elysia is running on
 EXPOSE 3000
 
-# Run the application
-CMD ["bun", "run", "src/index.ts"]
+# Run bootstrap (seeds DB only when empty, then starts API)
+CMD ["bun", "run", "src/bootstrap.ts"]
