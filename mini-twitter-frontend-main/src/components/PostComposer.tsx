@@ -1,6 +1,12 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { ImagePlus } from "lucide-react";
 import { postSchema, type PostSchema } from "../schemas/post";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 
 interface PostComposerProps {
   onSubmitPost: (payload: PostSchema) => Promise<void>;
@@ -8,6 +14,8 @@ interface PostComposerProps {
 }
 
 export const PostComposer = ({ onSubmitPost, loading }: PostComposerProps) => {
+  const [showImageField, setShowImageField] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -24,48 +32,65 @@ export const PostComposer = ({ onSubmitPost, loading }: PostComposerProps) => {
 
   return (
     <form
-      className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
+      className="surface animate-fade-up rounded-3xl p-4 md:p-5"
       onSubmit={handleSubmit(async (values) => {
         await onSubmitPost(values);
         reset({ title: "", content: "", image: "" });
+        setShowImageField(false);
       })}
     >
-      <h2 className="mb-3 text-lg font-bold text-slate-900 dark:text-slate-100">Postar</h2>
-
-      <div className="mb-3">
-        <input
-          {...register("title")}
-className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-        placeholder="Titulo"
-      />
-      {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
-    </div>
-
-    <div className="mb-3">
-      <textarea
-        {...register("content")}
-        className="h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-        placeholder="No que voce esta pensando?"
-      />
-      {errors.content && <p className="mt-1 text-xs text-red-600">{errors.content.message}</p>}
-    </div>
-
-    <div className="mb-3">
-      <input
-        {...register("image")}
-        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-          placeholder="URL da imagem (opcional)"
-        />
-        {errors.image && <p className="mt-1 text-xs text-red-600">{errors.image.message}</p>}
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-extrabold">Novo post</h2>
+        <Badge variant="secondary" className="text-[var(--tw-brand)]">Agora</Badge>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-full bg-sky-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {loading ? "Publicando..." : "Publicar"}
-      </button>
+      <div className="mb-3">
+        <Input
+          {...register("title")}
+          placeholder="Titulo do seu post"
+        />
+        {errors.title && <p className="mt-1 text-xs text-[var(--tw-danger)]">{errors.title.message}</p>}
+      </div>
+
+      <div className="mb-3">
+        <Textarea
+          {...register("content")}
+          className="h-28"
+          placeholder="Compartilhe uma ideia, dica ou opiniao..."
+        />
+        {errors.content && <p className="mt-1 text-xs text-[var(--tw-danger)]">{errors.content.message}</p>}
+      </div>
+
+      {showImageField || errors.image ? (
+        <div className="mb-4">
+          <Input
+            {...register("image")}
+            placeholder="URL da imagem (opcional)"
+          />
+          {errors.image && <p className="mt-1 text-xs text-[var(--tw-danger)]">{errors.image.message}</p>}
+        </div>
+      ) : null}
+
+      <div className="mt-2 flex items-end justify-between">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="rounded-full text-[var(--tw-brand)] hover:bg-[var(--tw-surface-soft)]"
+          aria-label="Anexar imagem"
+          onClick={() => setShowImageField((prev) => !prev)}
+        >
+          <ImagePlus className="h-6 w-6" />
+        </Button>
+
+        <Button
+          type="submit"
+          disabled={loading}
+          className="rounded-2xl"
+        >
+          {loading ? "Publicando..." : "Postar"}
+        </Button>
+      </div>
     </form>
   );
 };

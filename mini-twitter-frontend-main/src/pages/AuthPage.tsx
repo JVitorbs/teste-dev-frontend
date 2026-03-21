@@ -8,6 +8,12 @@ import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
 import { loginSchema, registerSchema, type LoginSchema, type RegisterSchema } from "../schemas/auth";
 import { useAuth } from "../context/AuthContext";
+import { ThemeToggleButton } from "../components/ThemeToggleButton";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 
 export const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -44,7 +50,7 @@ export const AuthPage = () => {
     mutationFn: authService.login,
     onSuccess: (data) => {
       setSession(data.token, data.user);
-      navigate("/", { replace: true });
+      navigate("/timeline", { replace: true });
     },
     onError: (error) => {
       setApiMessage(getApiError(error, "Credenciais invalidas."));
@@ -52,127 +58,117 @@ export const AuthPage = () => {
   });
 
   return (
-    <main className="mx-auto grid min-h-screen w-full max-w-5xl gap-6 px-4 py-8 md:grid-cols-2 md:items-center">
-      <section className="hidden rounded-3xl border border-sky-100 bg-white/75 p-8 shadow-sm md:block dark:border-sky-900 dark:bg-slate-800/75">
-        <p className="mb-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:bg-sky-900 dark:text-sky-300">
-          Mini Twitter
-        </p>
-        <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">Acontecendo agora</h1>
-        <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">
-          Entre para acompanhar as conversas da comunidade, publicar ideias e interagir em tempo real.
-        </p>
-      </section>
+    <main className="mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 gap-5 px-3 py-6 md:grid-cols-[1.2fr,1fr] md:items-center md:gap-8 md:px-6">
+      <Card className="animate-fade-up relative overflow-hidden p-6 md:p-10">
+        <div className="animate-pulse-soft absolute -left-20 -top-20 h-48 w-48 rounded-full bg-sky-200/60 blur-3xl dark:bg-sky-700/35" />
+        <div className="animate-pulse-soft absolute -bottom-24 right-2 h-56 w-56 rounded-full bg-cyan-200/50 blur-3xl dark:bg-cyan-700/25" />
 
-      <section className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Entrar no Mini Twitter</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Use sua conta para acessar a timeline.</p>
+        <div className="relative">
+          <Badge variant="secondary" className="mb-5 uppercase tracking-[0.14em] text-[var(--tw-brand)]">
+            Mini Twitter
+          </Badge>
+          <h1 className="max-w-md text-4xl font-extrabold leading-tight md:text-5xl">Converse com a comunidade em tempo real.</h1>
+          <p className="mt-4 max-w-md text-sm leading-6 text-[var(--tw-muted)] md:text-base">
+            Um feed rápido, focado em texto e ideias. Entre para compartilhar posts, curtir discussões e acompanhar os temas do momento.
+          </p>
+        </div>
+      </Card>
 
-        <div className="mt-4 grid grid-cols-2 rounded-full bg-slate-100 p-1 text-sm">
-          <button
-            className={`rounded-full py-2 font-semibold transition ${
-              mode === "login" ? "bg-white text-slate-900 shadow" : "text-slate-600"
-            }`}
-            onClick={() => setMode("login")}
-          >
-            Login
-          </button>
-          <button
-            className={`rounded-full py-2 font-semibold transition ${
-              mode === "register" ? "bg-white text-slate-900 shadow" : "text-slate-600"
-            }`}
-            onClick={() => setMode("register")}
-          >
-            Registrar
-          </button>
+      <Card className="animate-fade-up p-5 md:p-7">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-extrabold">{mode === "login" ? "Entrar" : "Criar conta"}</h2>
+          <ThemeToggleButton />
         </div>
 
-        {apiMessage && <p className="mt-3 rounded-xl bg-slate-50 p-3 text-sm text-slate-700">{apiMessage}</p>}
+        <Tabs value={mode} onValueChange={(value) => setMode(value as "login" | "register")} className="mt-1">
+          <TabsList>
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="register">Registrar</TabsTrigger>
+          </TabsList>
 
-        {mode === "register" ? (
-          <form
-            className="mt-4 space-y-3"
-            onSubmit={registerForm.handleSubmit((values) => registerMutation.mutate(values))}
-          >
+          {apiMessage && (
+            <p className="mt-4 rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface-soft)] p-3 text-sm text-[var(--tw-text)]">
+              {apiMessage}
+            </p>
+          )}
+
+          <TabsContent value="register" className="mt-4">
+            <form className="space-y-3" onSubmit={registerForm.handleSubmit((values) => registerMutation.mutate(values))}>
             <div>
-              <input
+              <Input
                 {...registerForm.register("name")}
                 placeholder="Nome"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.name && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.name.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.name.message}</p>
               )}
             </div>
 
             <div>
-              <input
+              <Input
                 {...registerForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.email && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <input
+              <Input
                 type="password"
                 {...registerForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.password && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.password.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.password.message}</p>
               )}
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={registerMutation.isPending}
-              className="w-full rounded-full bg-sky-500 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600 disabled:opacity-60"
+              className="w-full rounded-2xl"
             >
               {registerMutation.isPending ? "Criando conta..." : "Criar conta"}
-            </button>
-          </form>
-        ) : (
-          <form
-            className="mt-4 space-y-3"
-            onSubmit={loginForm.handleSubmit((values) => loginMutation.mutate(values))}
-          >
+            </Button>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="login" className="mt-4">
+            <form className="space-y-3" onSubmit={loginForm.handleSubmit((values) => loginMutation.mutate(values))}>
             <div>
-              <input
+              <Input
                 {...loginForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {loginForm.formState.errors.email && (
-                <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{loginForm.formState.errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <input
+              <Input
                 type="password"
                 {...loginForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {loginForm.formState.errors.password && (
-                <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.password.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{loginForm.formState.errors.password.message}</p>
               )}
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loginMutation.isPending}
-              className="w-full rounded-full bg-sky-500 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600 disabled:opacity-60"
+              className="w-full rounded-2xl"
             >
               {loginMutation.isPending ? "Entrando..." : "Entrar"}
-            </button>
-          </form>
-        )}
-      </section>
+            </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </Card>
     </main>
   );
 };

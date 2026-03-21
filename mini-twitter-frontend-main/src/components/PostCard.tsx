@@ -3,6 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { postSchema, type PostSchema } from "../schemas/post";
 import type { PostItem, User } from "../types/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Expand } from "lucide-react";
 
 interface PostCardProps {
   post: PostItem;
@@ -10,7 +15,9 @@ interface PostCardProps {
   liked: boolean;
   canInteract: boolean;
   likeLoading?: boolean;
+  animationDelayMs?: number;
   onRequireAuth?: () => void;
+  onOpenPost?: (postId: number) => void;
   onToggleLike: (postId: number, currentLiked: boolean) => void;
   onDelete: (postId: number) => void;
   onUpdate: (postId: number, payload: PostSchema) => Promise<void>;
@@ -22,7 +29,9 @@ export const PostCard = ({
   liked,
   canInteract,
   likeLoading = false,
+  animationDelayMs = 0,
   onRequireAuth,
+  onOpenPost,
   onToggleLike,
   onDelete,
   onUpdate,
@@ -49,7 +58,15 @@ export const PostCard = ({
   });
 
   return (
-    <article className="border-b border-slate-200 p-4 transition hover:bg-slate-50/70 dark:border-slate-700 dark:hover:bg-slate-800/70">
+    <article
+      className="animate-fade-up cursor-pointer border-b border-[var(--tw-border)] px-4 py-4 transition hover:bg-[var(--tw-surface-soft)] md:px-5"
+      style={{ animationDelay: `${animationDelayMs}ms` }}
+      onClick={() => {
+        if (!isEditing) {
+          onOpenPost?.(post.id);
+        }
+      }}
+    >
       {isEditing ? (
         <form
           className="space-y-2"
@@ -58,85 +75,110 @@ export const PostCard = ({
             setIsEditing(false);
           })}
         >
-          <input
+          <Input
             {...register("title")}
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
           />
-          {errors.title && <p className="text-xs text-red-600">{errors.title.message}</p>}
+          {errors.title && <p className="text-xs text-[var(--tw-danger)]">{errors.title.message}</p>}
 
-          <textarea
+          <Textarea
             {...register("content")}
-            className="h-20 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
+            className="h-24"
           />
-          {errors.content && <p className="text-xs text-red-600">{errors.content.message}</p>}
+          {errors.content && <p className="text-xs text-[var(--tw-danger)]">{errors.content.message}</p>}
 
-          <input
+          <Input
             {...register("image")}
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-sky-500"
           />
-          {errors.image && <p className="text-xs text-red-600">{errors.image.message}</p>}
+          {errors.image && <p className="text-xs text-[var(--tw-danger)]">{errors.image.message}</p>}
 
           <div className="flex gap-2">
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-white"
+              className="rounded-full"
             >
               Salvar
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="rounded-full border border-slate-300 px-4 py-2 text-sm"
+              variant="outline"
+              className="rounded-full"
               onClick={() => setIsEditing(false)}
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       ) : (
         <>
-          <header className="mb-3 flex items-center justify-between gap-3">
+          <header className="mb-3 flex items-start justify-between gap-3">
             <div>
-              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{post.title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {post.authorName} • {createdAt}
-              </p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-extrabold md:text-lg">{post.title}</h3>
+                <Badge variant="secondary" className="text-[11px]">
+                  {createdAt}
+                </Badge>
+              </div>
+              <p className="mt-1 text-xs text-[var(--tw-muted)]">por {post.authorName}</p>
             </div>
 
             {isOwner && (
               <div className="flex gap-2">
-                <button
-                  className="rounded-full border border-slate-300 px-3 py-1 text-xs"
-                  onClick={() => setIsEditing(true)}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setIsEditing(true);
+                  }}
                 >
                   Editar
-                </button>
-                <button
-                  className="rounded-full border border-red-300 px-3 py-1 text-xs text-red-600"
-                  onClick={() => onDelete(post.id)}
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="rounded-full"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onDelete(post.id);
+                  }}
                 >
                   Deletar
-                </button>
+                </Button>
               </div>
             )}
           </header>
 
-          <p className="mb-3 text-sm text-slate-700 dark:text-slate-300">{post.content}</p>
+          <p className="mb-3 text-sm leading-6 text-[var(--tw-text)] md:text-[15px]">{post.content}</p>
 
           {post.image ? (
-            <img
-              src={post.image}
-              alt={post.title}
-              className="mb-3 max-h-64 w-full rounded-lg object-cover"
-            />
+            <img src={post.image} alt={post.title} className="mb-3 max-h-72 w-full rounded-2xl object-cover" loading="lazy" />
           ) : null}
 
-          <button
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-              liked ? "bg-rose-500 text-white" : "bg-slate-100 text-slate-700 hover:bg-rose-50 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-rose-900/20"
-            }`}
+          <Button
+            variant={liked ? "destructive" : "outline"}
+            className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+              liked ? "" : "text-[var(--tw-muted)] hover:border-rose-200 hover:text-rose-500"
+            } ${likeLoading ? "opacity-70" : ""}`}
             disabled={likeLoading}
-            onClick={() => {
+            aria-label={
+              !canInteract
+                ? "Entrar para curtir"
+                : liked
+                  ? "Descurtir post"
+                  : "Curtir post"
+            }
+            title={
+              !canInteract
+                ? "Entrar para curtir"
+                : liked
+                  ? "Descurtir post"
+                  : "Curtir post"
+            }
+            onClick={(event) => {
+              event.stopPropagation();
+
               if (!canInteract) {
                 onRequireAuth?.();
                 return;
@@ -145,7 +187,22 @@ export const PostCard = ({
               onToggleLike(post.id, liked);
             }}
           >
-            {!canInteract ? "Entrar para curtir" : liked ? "Descurtir" : "Curtir"} • {post.likesCount}
+            <Heart
+              className={`mr-2 h-4 w-4 ${liked ? "animate-heart-pop fill-current" : ""}`}
+            />
+            <span>{post.likesCount}</span>
+          </Button>
+
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenPost?.(post.id);
+            }}
+            className="ml-2 inline-flex items-center gap-1 rounded-full px-3 py-2 text-xs font-semibold text-[var(--tw-muted)] transition hover:bg-[var(--tw-surface-soft)]"
+          >
+            <Expand className="h-3.5 w-3.5" />
+            Abrir
           </button>
         </>
       )}
