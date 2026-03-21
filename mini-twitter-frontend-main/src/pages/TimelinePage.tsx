@@ -331,6 +331,10 @@ export const TimelinePage = () => {
               className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-bold transition ${
                 likedByMe[expandedPost.id] ? "bg-rose-500 text-white" : "border border-[var(--tw-border)] text-[var(--tw-muted)] hover:text-rose-500"
               }`}
+              aria-label={
+                likedByMe[expandedPost.id] ? "Descurtir post" : "Curtir post"
+              }
+              title={likedByMe[expandedPost.id] ? "Descurtir post" : "Curtir post"}
               onClick={() => {
                 if (!isAuthenticated) {
                   navigate("/auth");
@@ -341,7 +345,7 @@ export const TimelinePage = () => {
               }}
             >
               <Heart className={`mr-2 h-4 w-4 ${likedByMe[expandedPost.id] ? "animate-heart-pop fill-current" : ""}`} />
-              {likedByMe[expandedPost.id] ? "Descurtir" : "Curtir"} • {expandedPost.likesCount}
+              <span>{expandedPost.likesCount}</span>
             </button>
           </article>
         </div>

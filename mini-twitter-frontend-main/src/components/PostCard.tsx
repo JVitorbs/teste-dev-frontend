@@ -162,6 +162,20 @@ export const PostCard = ({
               liked ? "" : "text-[var(--tw-muted)] hover:border-rose-200 hover:text-rose-500"
             } ${likeLoading ? "opacity-70" : ""}`}
             disabled={likeLoading}
+            aria-label={
+              !canInteract
+                ? "Entrar para curtir"
+                : liked
+                  ? "Descurtir post"
+                  : "Curtir post"
+            }
+            title={
+              !canInteract
+                ? "Entrar para curtir"
+                : liked
+                  ? "Descurtir post"
+                  : "Curtir post"
+            }
             onClick={(event) => {
               event.stopPropagation();
 
@@ -176,7 +190,7 @@ export const PostCard = ({
             <Heart
               className={`mr-2 h-4 w-4 ${liked ? "animate-heart-pop fill-current" : ""}`}
             />
-            {!canInteract ? "Entrar para curtir" : liked ? "Descurtir" : "Curtir"} • {post.likesCount}
+            <span>{post.likesCount}</span>
           </Button>
 
           <button
