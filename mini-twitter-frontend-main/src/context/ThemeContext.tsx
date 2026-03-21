@@ -13,17 +13,36 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("theme");
-    return (saved as Theme) || "light";
+
+    if (saved === "light" || saved === "dark") {
+      return saved;
+    }
+
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+
+    return "light";
   });
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
     document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  const toggleTheme = () => {
+    document.documentElement.classList.add("theme-switching");
+    window.setTimeout(() => {
+      document.documentElement.classList.remove("theme-switching");
+    }, 360);
+
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const value = {
     theme,
-    toggleTheme: () => setTheme((prev) => (prev === "light" ? "dark" : "light")),
+    toggleTheme,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
