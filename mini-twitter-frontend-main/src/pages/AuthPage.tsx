@@ -2,6 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
@@ -30,6 +31,11 @@ export const AuthPage = () => {
       registerForm.reset();
     },
     onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setApiMessage("Este e-mail ja esta em uso. Tente outro e-mail.");
+        return;
+      }
+
       setApiMessage(getApiError(error, "Nao foi possivel registrar."));
     },
   });
@@ -47,19 +53,19 @@ export const AuthPage = () => {
 
   return (
     <main className="mx-auto grid min-h-screen w-full max-w-5xl gap-6 px-4 py-8 md:grid-cols-2 md:items-center">
-      <section className="hidden rounded-3xl border border-sky-100 bg-white/75 p-8 shadow-sm md:block">
-        <p className="mb-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700">
+      <section className="hidden rounded-3xl border border-sky-100 bg-white/75 p-8 shadow-sm md:block dark:border-sky-900 dark:bg-slate-800/75">
+        <p className="mb-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:bg-sky-900 dark:text-sky-300">
           Mini Twitter
         </p>
-        <h1 className="text-4xl font-black tracking-tight text-slate-900">Acontecendo agora</h1>
-        <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">
+        <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">Acontecendo agora</h1>
+        <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">
           Entre para acompanhar as conversas da comunidade, publicar ideias e interagir em tempo real.
         </p>
       </section>
 
-      <section className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900">Entrar no Mini Twitter</h2>
-        <p className="mt-1 text-sm text-slate-600">Use sua conta para acessar a timeline.</p>
+      <section className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Entrar no Mini Twitter</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Use sua conta para acessar a timeline.</p>
 
         <div className="mt-4 grid grid-cols-2 rounded-full bg-slate-100 p-1 text-sm">
           <button
@@ -91,7 +97,7 @@ export const AuthPage = () => {
               <input
                 {...registerForm.register("name")}
                 placeholder="Nome"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.name && (
                 <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.name.message}</p>
@@ -102,7 +108,7 @@ export const AuthPage = () => {
               <input
                 {...registerForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.email && (
                 <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.email.message}</p>
@@ -114,7 +120,7 @@ export const AuthPage = () => {
                 type="password"
                 {...registerForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {registerForm.formState.errors.password && (
                 <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.password.message}</p>
@@ -138,7 +144,7 @@ export const AuthPage = () => {
               <input
                 {...loginForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {loginForm.formState.errors.email && (
                 <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.email.message}</p>
@@ -150,7 +156,7 @@ export const AuthPage = () => {
                 type="password"
                 {...loginForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               />
               {loginForm.formState.errors.password && (
                 <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.password.message}</p>

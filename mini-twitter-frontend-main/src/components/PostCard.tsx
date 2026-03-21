@@ -8,6 +8,9 @@ interface PostCardProps {
   post: PostItem;
   currentUser: User | null;
   liked: boolean;
+  canInteract: boolean;
+  likeLoading?: boolean;
+  onRequireAuth?: () => void;
   onToggleLike: (postId: number, currentLiked: boolean) => void;
   onDelete: (postId: number) => void;
   onUpdate: (postId: number, payload: PostSchema) => Promise<void>;
@@ -17,6 +20,9 @@ export const PostCard = ({
   post,
   currentUser,
   liked,
+  canInteract,
+  likeLoading = false,
+  onRequireAuth,
   onToggleLike,
   onDelete,
   onUpdate,
@@ -43,7 +49,7 @@ export const PostCard = ({
   });
 
   return (
-    <article className="border-b border-slate-200 p-4 transition hover:bg-slate-50/70">
+    <article className="border-b border-slate-200 p-4 transition hover:bg-slate-50/70 dark:border-slate-700 dark:hover:bg-slate-800/70">
       {isEditing ? (
         <form
           className="space-y-2"
@@ -91,8 +97,8 @@ export const PostCard = ({
         <>
           <header className="mb-3 flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-base font-semibold text-slate-900">{post.title}</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{post.title}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {post.authorName} • {createdAt}
               </p>
             </div>
@@ -115,7 +121,7 @@ export const PostCard = ({
             )}
           </header>
 
-          <p className="mb-3 text-sm text-slate-700">{post.content}</p>
+          <p className="mb-3 text-sm text-slate-700 dark:text-slate-300">{post.content}</p>
 
           {post.image ? (
             <img
@@ -127,11 +133,19 @@ export const PostCard = ({
 
           <button
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-              liked ? "bg-rose-500 text-white" : "bg-slate-100 text-slate-700 hover:bg-rose-50"
+              liked ? "bg-rose-500 text-white" : "bg-slate-100 text-slate-700 hover:bg-rose-50 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-rose-900/20"
             }`}
-            onClick={() => onToggleLike(post.id, liked)}
+            disabled={likeLoading}
+            onClick={() => {
+              if (!canInteract) {
+                onRequireAuth?.();
+                return;
+              }
+
+              onToggleLike(post.id, liked);
+            }}
           >
-            {liked ? "Descurtir" : "Curtir"} • {post.likesCount}
+            {!canInteract ? "Entrar para curtir" : liked ? "Descurtir" : "Curtir"} • {post.likesCount}
           </button>
         </>
       )}
