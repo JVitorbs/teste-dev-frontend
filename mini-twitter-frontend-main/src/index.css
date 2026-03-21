@@ -1,24 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-  color: #0f172a;
+  --tw-bg: #f5f8fb;
+  --tw-surface: #ffffff;
+  --tw-surface-soft: #eef4fb;
+  --tw-border: #d7e3f4;
+  --tw-text: #0f172a;
+  --tw-muted: #5c6d86;
+  --tw-brand: #1d9bf0;
+  --tw-brand-strong: #1686d1;
+  --tw-danger: #ef4444;
+  --tw-shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.4);
+}
+
+html.dark {
+  --tw-bg: #07111c;
+  --tw-surface: #0f1b2c;
+  --tw-surface-soft: #14253a;
+  --tw-border: #20344c;
+  --tw-text: #e6edf7;
+  --tw-muted: #97adc8;
+  --tw-brand: #1d9bf0;
+  --tw-brand-strong: #4db5ff;
+  --tw-danger: #ff6b6b;
+  --tw-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.75);
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background:
-    radial-gradient(1200px 500px at 15% -10%, rgba(29, 155, 240, 0.14), transparent 60%),
-    linear-gradient(180deg, #f4f9fd 0%, #eef4f8 100%);
-  color: #0f172a;
+html,
+body,
+#root {
+  min-height: 100%;
+  max-width: 100%;
 }
 
-#root {
-  min-height: 100vh;
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(1200px 500px at -10% -15%, rgba(29, 155, 240, 0.25), transparent 60%),
+    radial-gradient(1000px 500px at 110% -20%, rgba(14, 165, 233, 0.18), transparent 60%),
+    var(--tw-bg);
+  color: var(--tw-text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Space Grotesk", "Manrope", sans-serif;
+}
+
+::selection {
+  background: rgba(29, 155, 240, 0.26);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 460ms ease-out both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4.2s ease-in-out infinite;
+}
+
+.surface {
+  background: var(--tw-surface);
+  border: 1px solid var(--tw-border);
+  box-shadow: var(--tw-shadow);
+}
+
+.surface-soft {
+  background: var(--tw-surface-soft);
+  border: 1px solid var(--tw-border);
+}
+
+.twitter-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.twitter-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(117, 138, 168, 0.45);
+  border-radius: 999px;
 }
