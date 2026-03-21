@@ -107,6 +107,18 @@ h4 {
   }
 }
 
+@keyframes theme-shift {
+  0% {
+    filter: saturate(1) brightness(1);
+  }
+  50% {
+    filter: saturate(1.08) brightness(1.04);
+  }
+  100% {
+    filter: saturate(1) brightness(1);
+  }
+}
+
 .animate-fade-up {
   animation: fade-up 460ms ease-out both;
 }
@@ -121,6 +133,19 @@ h4 {
 
 .modal-pop {
   animation: modal-pop 240ms ease-out both;
+}
+
+html.theme-switching body {
+  animation: theme-shift 360ms ease-out;
+}
+
+body,
+.surface,
+.surface-soft,
+input,
+textarea,
+button {
+  transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease;
 }
 
 .surface {
