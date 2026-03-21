@@ -31,9 +31,18 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  const toggleTheme = () => {
+    document.documentElement.classList.add("theme-switching");
+    window.setTimeout(() => {
+      document.documentElement.classList.remove("theme-switching");
+    }, 360);
+
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   const value = {
     theme,
-    toggleTheme: () => setTheme((prev) => (prev === "light" ? "dark" : "light")),
+    toggleTheme,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
