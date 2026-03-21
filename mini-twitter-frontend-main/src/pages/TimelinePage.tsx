@@ -10,6 +10,7 @@ import { authService } from "../services/auth.service";
 import { postService } from "../services/post.service";
 import { PostComposer } from "../components/PostComposer";
 import { PostCard } from "../components/PostCard";
+import type { PostsResponse } from "../types/api";
 
 const queryKey = (search: string) => ["posts", search] as const;
 
@@ -79,7 +80,7 @@ export const TimelinePage = () => {
     mutationFn: ({ postId }: { postId: number; currentLiked: boolean }) => postService.like(postId),
     onMutate: async ({ postId, currentLiked }) => {
       await queryClient.cancelQueries({ queryKey: ["posts"] });
-      const previous = queryClient.getQueryData(queryKey(search));
+      const previous = queryClient.getQueryData<{ pages: PostsResponse[]; pageParams: number[] }>(queryKey(search));
 
       if (previous) {
         queryClient.setQueryData(queryKey(search), {
