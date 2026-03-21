@@ -8,7 +8,7 @@ import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
 import { loginSchema, registerSchema, type LoginSchema, type RegisterSchema } from "../schemas/auth";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { ThemeToggleButton } from "../components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,6 @@ export const AuthPage = () => {
   const [apiMessage, setApiMessage] = useState<string>("");
   const navigate = useNavigate();
   const { setSession } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   const registerForm = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
@@ -72,32 +71,13 @@ export const AuthPage = () => {
           <p className="mt-4 max-w-md text-sm leading-6 text-[var(--tw-muted)] md:text-base">
             Um feed rápido, focado em texto e ideias. Entre para compartilhar posts, curtir discussões e acompanhar os temas do momento.
           </p>
-
-          <div className="mt-8 grid grid-cols-2 gap-3 text-sm">
-            <div className="surface-soft rounded-2xl p-4">
-              <p className="font-bold text-[var(--tw-brand)]">+7</p>
-              <p className="mt-1 text-[var(--tw-muted)]">posts iniciais no feed</p>
-            </div>
-            <div className="surface-soft rounded-2xl p-4">
-              <p className="font-bold text-[var(--tw-brand)]">100%</p>
-              <p className="mt-1 text-[var(--tw-muted)]">responsivo para mobile</p>
-            </div>
-          </div>
         </div>
       </Card>
 
       <Card className="animate-fade-up p-5 md:p-7">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-extrabold">{mode === "login" ? "Entrar" : "Criar conta"}</h2>
-          <Button
-            onClick={toggleTheme}
-            type="button"
-            variant="outline"
-            size="sm"
-            className="rounded-full"
-          >
-            {theme === "light" ? "Modo escuro" : "Modo claro"}
-          </Button>
+          <ThemeToggleButton />
         </div>
 
         <Tabs value={mode} onValueChange={(value) => setMode(value as "login" | "register")} className="mt-1">
