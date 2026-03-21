@@ -8,12 +8,14 @@ import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
 import { loginSchema, registerSchema, type LoginSchema, type RegisterSchema } from "../schemas/auth";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [apiMessage, setApiMessage] = useState<string>("");
   const navigate = useNavigate();
   const { setSession } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const registerForm = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
@@ -52,55 +54,76 @@ export const AuthPage = () => {
   });
 
   return (
-    <main className="mx-auto grid min-h-screen w-full max-w-5xl gap-6 px-4 py-8 md:grid-cols-2 md:items-center">
-      <section className="hidden rounded-3xl border border-sky-100 bg-white/75 p-8 shadow-sm md:block dark:border-sky-900 dark:bg-slate-800/75">
-        <p className="mb-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:bg-sky-900 dark:text-sky-300">
-          Mini Twitter
-        </p>
-        <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">Acontecendo agora</h1>
-        <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">
-          Entre para acompanhar as conversas da comunidade, publicar ideias e interagir em tempo real.
-        </p>
+    <main className="mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 gap-5 px-3 py-6 md:grid-cols-[1.2fr,1fr] md:items-center md:gap-8 md:px-6">
+      <section className="surface animate-fade-up relative overflow-hidden rounded-3xl p-6 md:p-10">
+        <div className="animate-pulse-soft absolute -left-20 -top-20 h-48 w-48 rounded-full bg-sky-200/60 blur-3xl dark:bg-sky-700/35" />
+        <div className="animate-pulse-soft absolute -bottom-24 right-2 h-56 w-56 rounded-full bg-cyan-200/50 blur-3xl dark:bg-cyan-700/25" />
+
+        <div className="relative">
+          <p className="mb-5 inline-flex rounded-full border border-[var(--tw-border)] bg-[var(--tw-surface-soft)] px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[var(--tw-brand)]">
+            Mini Twitter
+          </p>
+          <h1 className="max-w-md text-4xl font-extrabold leading-tight md:text-5xl">Converse com a comunidade em tempo real.</h1>
+          <p className="mt-4 max-w-md text-sm leading-6 text-[var(--tw-muted)] md:text-base">
+            Um feed rápido, focado em texto e ideias. Entre para compartilhar posts, curtir discussões e acompanhar os temas do momento.
+          </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-3 text-sm">
+            <div className="surface-soft rounded-2xl p-4">
+              <p className="font-bold text-[var(--tw-brand)]">+7</p>
+              <p className="mt-1 text-[var(--tw-muted)]">posts iniciais no feed</p>
+            </div>
+            <div className="surface-soft rounded-2xl p-4">
+              <p className="font-bold text-[var(--tw-brand)]">100%</p>
+              <p className="mt-1 text-[var(--tw-muted)]">responsivo para mobile</p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Entrar no Mini Twitter</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Use sua conta para acessar a timeline.</p>
-
-        <div className="mt-4 grid grid-cols-2 rounded-full bg-slate-100 p-1 text-sm">
+      <section className="surface animate-fade-up rounded-3xl p-5 md:p-7">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-extrabold">{mode === "login" ? "Entrar" : "Criar conta"}</h2>
           <button
-            className={`rounded-full py-2 font-semibold transition ${
-              mode === "login" ? "bg-white text-slate-900 shadow" : "text-slate-600"
-            }`}
+            onClick={toggleTheme}
+            type="button"
+            className="rounded-full border border-[var(--tw-border)] bg-[var(--tw-surface-soft)] px-3 py-1 text-xs font-bold text-[var(--tw-muted)] transition hover:text-[var(--tw-text)]"
+          >
+            {theme === "light" ? "Modo escuro" : "Modo claro"}
+          </button>
+        </div>
+
+        <div className="surface-soft grid grid-cols-2 rounded-full p-1 text-sm">
+          <button
+            className={`rounded-full py-2 font-bold transition ${mode === "login" ? "bg-[var(--tw-surface)] text-[var(--tw-text)]" : "text-[var(--tw-muted)]"}`}
             onClick={() => setMode("login")}
           >
             Login
           </button>
           <button
-            className={`rounded-full py-2 font-semibold transition ${
-              mode === "register" ? "bg-white text-slate-900 shadow" : "text-slate-600"
-            }`}
+            className={`rounded-full py-2 font-bold transition ${mode === "register" ? "bg-[var(--tw-surface)] text-[var(--tw-text)]" : "text-[var(--tw-muted)]"}`}
             onClick={() => setMode("register")}
           >
             Registrar
           </button>
         </div>
 
-        {apiMessage && <p className="mt-3 rounded-xl bg-slate-50 p-3 text-sm text-slate-700">{apiMessage}</p>}
+        {apiMessage && (
+          <p className="mt-4 rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface-soft)] p-3 text-sm text-[var(--tw-text)]">
+            {apiMessage}
+          </p>
+        )}
 
         {mode === "register" ? (
-          <form
-            className="mt-4 space-y-3"
-            onSubmit={registerForm.handleSubmit((values) => registerMutation.mutate(values))}
-          >
+          <form className="mt-4 space-y-3" onSubmit={registerForm.handleSubmit((values) => registerMutation.mutate(values))}>
             <div>
               <input
                 {...registerForm.register("name")}
                 placeholder="Nome"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--tw-brand)]"
               />
               {registerForm.formState.errors.name && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.name.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.name.message}</p>
               )}
             </div>
 
@@ -108,10 +131,10 @@ export const AuthPage = () => {
               <input
                 {...registerForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--tw-brand)]"
               />
               {registerForm.formState.errors.email && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.email.message}</p>
               )}
             </div>
 
@@ -120,34 +143,31 @@ export const AuthPage = () => {
                 type="password"
                 {...registerForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--tw-brand)]"
               />
               {registerForm.formState.errors.password && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.password.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{registerForm.formState.errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={registerMutation.isPending}
-              className="w-full rounded-full bg-sky-500 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600 disabled:opacity-60"
+              className="w-full rounded-2xl bg-[var(--tw-brand)] py-3 text-sm font-bold text-white transition hover:bg-[var(--tw-brand-strong)] disabled:opacity-60"
             >
               {registerMutation.isPending ? "Criando conta..." : "Criar conta"}
             </button>
           </form>
         ) : (
-          <form
-            className="mt-4 space-y-3"
-            onSubmit={loginForm.handleSubmit((values) => loginMutation.mutate(values))}
-          >
+          <form className="mt-4 space-y-3" onSubmit={loginForm.handleSubmit((values) => loginMutation.mutate(values))}>
             <div>
               <input
                 {...loginForm.register("email")}
                 placeholder="E-mail"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--tw-brand)]"
               />
               {loginForm.formState.errors.email && (
-                <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{loginForm.formState.errors.email.message}</p>
               )}
             </div>
 
@@ -156,17 +176,17 @@ export const AuthPage = () => {
                 type="password"
                 {...loginForm.register("password")}
                 placeholder="Senha"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-sky-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-2xl border border-[var(--tw-border)] bg-[var(--tw-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--tw-brand)]"
               />
               {loginForm.formState.errors.password && (
-                <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.password.message}</p>
+                <p className="mt-1 text-xs text-[var(--tw-danger)]">{loginForm.formState.errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={loginMutation.isPending}
-              className="w-full rounded-full bg-sky-500 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600 disabled:opacity-60"
+              className="w-full rounded-2xl bg-[var(--tw-brand)] py-3 text-sm font-bold text-white transition hover:bg-[var(--tw-brand-strong)] disabled:opacity-60"
             >
               {loginMutation.isPending ? "Entrando..." : "Entrar"}
             </button>
