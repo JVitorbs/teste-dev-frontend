@@ -173,6 +173,21 @@ describe("TimelinePage", () => {
     expect(screen.getByRole("button", { name: "Limpar busca" })).toBeInTheDocument();
   });
 
+  it("abre menu mobile e mostra opcao de sair", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <TimelinePage />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Abrir menu" }));
+
+    expect(screen.getByRole("button", { name: "Fechar menu" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Sair" }).length).toBeGreaterThan(0);
+  });
+
   it("renderiza botão sair para usuario autenticado", async () => {
     render(
       <MemoryRouter>
