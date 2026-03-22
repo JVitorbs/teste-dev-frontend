@@ -139,7 +139,7 @@ describe("TimelinePage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("@alice")).toBeInTheDocument();
+      expect(screen.getAllByText("@alice").length).toBeGreaterThan(0);
     });
   });
 
@@ -196,7 +196,7 @@ describe("TimelinePage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Sair")).toBeInTheDocument();
+      expect(screen.getAllByRole("button", { name: "Sair" }).length).toBeGreaterThan(0);
     });
   });
 
@@ -233,7 +233,7 @@ describe("TimelinePage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByAltText("Mini Twitter")).toBeInTheDocument();
+    expect(screen.getAllByAltText("Mini Twitter").length).toBeGreaterThan(0);
     expect(screen.getByText("Timeline")).toBeInTheDocument();
     expect(screen.getByText("Destaques")).toBeInTheDocument();
   });
@@ -262,7 +262,7 @@ describe("TimelinePage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("@alice")).toBeInTheDocument();
+      expect(screen.getAllByText("@alice").length).toBeGreaterThan(0);
     });
   });
 

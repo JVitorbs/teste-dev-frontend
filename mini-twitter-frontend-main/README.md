@@ -27,7 +27,7 @@ Este app consome a API do projeto e entrega os fluxos principais:
 - Axios
 - Tailwind CSS
 - Sonner (toasts)
-- Vitest + Testing Library
+- Vitest + Testing Library + Playwright
 
 ## Requisitos
 
@@ -61,6 +61,55 @@ Aplicacao: `http://localhost:5173`
 - `npm run lint`: lint do projeto
 - `npm run test`: testes em watch
 - `npm run test:run`: execucao unica dos testes
+- `npm run test:e2e`: suite E2E com Playwright
+- `npm run test:e2e:headed`: suite E2E com navegador visivel
+- `npm run test:e2e:ui`: runner interativo do Playwright
+
+## Testes unitarios
+
+Os testes unitarios e de integracao leve usam `Vitest` + `Testing Library` e ficam principalmente em `src/**/__tests__`.
+
+Cobertura atual de unitarios:
+
+- paginas
+- componentes
+- contexts
+- services
+- libs
+- schemas
+
+Para executar em modo watch:
+
+```bash
+npm run test
+```
+
+Para executar uma vez (modo CI/local):
+
+```bash
+npm run test:run
+```
+
+## Testes E2E
+
+Os testes E2E ficam em `tests/e2e` e cobrem os fluxos principais:
+
+- protecao de rota
+- registro e login
+- timeline com criacao, edicao, exclusao, busca e curtida
+- menu mobile e logout
+
+Para preparar o ambiente local de E2E:
+
+```bash
+npx playwright install chromium
+```
+
+Para executar:
+
+```bash
+npm run test:e2e
+```
 
 ## Estrutura principal
 
@@ -114,20 +163,15 @@ Rotas protegidas usam `ProtectedRoute` e redirecionam para `/auth` quando nao au
 
 ## Qualidade e testes
 
-Cobertura de testes em:
+Estratégia de qualidade:
 
-- paginas
-- componentes
-- contexts
-- services
-- libs
-- schemas
+- unitarios para regras de negocio, validacoes e comportamento de componentes
+- E2E para fluxos completos de usuario (auth, timeline, acoes principais)
 
-Para rodar tudo:
+Comandos principais:
 
-```bash
-npm run test:run
-```
+- `npm run test:run`
+- `npm run test:e2e`
 
 ## Documentacao tecnica detalhada
 
