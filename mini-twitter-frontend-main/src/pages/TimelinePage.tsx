@@ -12,7 +12,7 @@ import { postService } from "../services/post.service";
 import { PostComposer } from "../components/PostComposer";
 import { PostCard } from "../components/PostCard";
 import { ThemeToggleButton } from "../components/ThemeToggleButton";
-import { Heart, X } from "lucide-react";
+import { Heart, Menu, X } from "lucide-react";
 
 const queryKey = (search: string) => ["posts", search] as const;
 
@@ -21,6 +21,7 @@ export const TimelinePage = () => {
   const [message, setMessage] = useState("");
   const [likedByMe, setLikedByMe] = useState<Record<number, boolean>>({});
   const [expandedPostId, setExpandedPostId] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -194,7 +195,17 @@ export const TimelinePage = () => {
         <section className="surface twitter-scroll min-h-screen overflow-hidden rounded-3xl">
           <header className="surface-soft sticky top-0 z-10 border-x-0 border-t-0 px-4 py-3 backdrop-blur md:px-5">
             <div className="flex items-center justify-between gap-3">
-              <h1 className="text-xl font-extrabold">Timeline</h1>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(true)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--tw-border)] md:hidden"
+                  aria-label="Abrir menu"
+                >
+                  <Menu className="h-4 w-4" />
+                </button>
+                <h1 className="text-xl font-extrabold">Timeline</h1>
+              </div>
               <div className="flex items-center gap-2">
                 <ThemeToggleButton />
                 {!isAuthenticated ? (
@@ -284,6 +295,79 @@ export const TimelinePage = () => {
               <p className="mt-1 text-[var(--tw-muted)]">Troca de claro e escuro com persistencia.</p>
             </div>
           </div>
+        </aside>
+      </div>
+
+      <div
+        className={`fixed inset-0 z-40 transition-opacity duration-300 md:hidden ${mobileMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        <div
+          className={`absolute inset-0 bg-slate-950/45 transition-all duration-300 ${mobileMenuOpen ? "backdrop-blur-sm" : "backdrop-blur-0"}`}
+        />
+        <aside
+          aria-hidden={!mobileMenuOpen}
+          className={`surface absolute inset-y-0 left-0 z-50 w-[84%] max-w-xs p-5 shadow-2xl will-change-transform origin-left transition-[transform,opacity] duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileMenuOpen ? "translate-x-0 opacity-100 scale-100" : "-translate-x-[108%] opacity-0 scale-[0.98]"}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+            <div className="flex items-center justify-between">
+              <img src="/logo_minitt.png" alt="Mini Twitter" className="h-8 w-auto" />
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--tw-border)]"
+                aria-label="Fechar menu"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <p className="mt-2 text-sm text-[var(--tw-muted)]">{user ? `@${user.name.toLowerCase().replace(/\s+/g, "")}` : "Comunidade aberta"}</p>
+
+            <div className="mt-6 space-y-2">
+              <button
+                onClick={() => {
+                  navigate("/");
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full rounded-2xl bg-[var(--tw-surface-soft)] px-4 py-2 text-left text-sm font-bold"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => {
+                  setSearch("");
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full rounded-2xl border border-[var(--tw-border)] px-4 py-2 text-left text-sm font-bold"
+              >
+                Limpar busca
+              </button>
+            </div>
+
+            <div className="mt-8">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => {
+                    logoutMutation.mutate();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full rounded-2xl border border-[var(--tw-border)] px-4 py-2 text-sm font-bold"
+                >
+                  {logoutMutation.isPending ? "Saindo..." : "Sair"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    navigate("/auth");
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full rounded-2xl bg-[var(--tw-brand)] px-4 py-2 text-sm font-bold text-white"
+                >
+                  Entrar
+                </button>
+              )}
+            </div>
         </aside>
       </div>
 
