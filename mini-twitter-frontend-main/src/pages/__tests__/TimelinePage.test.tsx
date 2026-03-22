@@ -218,7 +218,7 @@ describe("TimelinePage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Mini Twitter")).toBeInTheDocument();
+    expect(screen.getByAltText("Mini Twitter")).toBeInTheDocument();
     expect(screen.getByText("Timeline")).toBeInTheDocument();
     expect(screen.getByText("Destaques")).toBeInTheDocument();
   });
