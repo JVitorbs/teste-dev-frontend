@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import type { PostSchema } from "../schemas/post";
 import type { PostsResponse } from "../types/api";
 import { useAuth } from "../context/AuthContext";
@@ -39,6 +40,7 @@ export const TimelinePage = () => {
   const createMutation = useMutation({
     mutationFn: postService.create,
     onSuccess: () => {
+      toast.success("Post publicado com sucesso.");
       setMessage("Post publicado com sucesso.");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },

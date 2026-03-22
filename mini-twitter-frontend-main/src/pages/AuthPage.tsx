@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
 import { loginSchema, registerSchema, type LoginSchema, type RegisterSchema } from "../schemas/auth";
@@ -32,6 +33,7 @@ export const AuthPage = () => {
   const registerMutation = useMutation({
     mutationFn: authService.register,
     onSuccess: () => {
+      toast.success("Conta criada com sucesso.");
       setApiMessage("Conta criada com sucesso. Agora faca login.");
       setMode("login");
       registerForm.reset();
@@ -49,6 +51,7 @@ export const AuthPage = () => {
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
+      toast.success(`Bem-vindo, ${data.user.name}!`);
       setSession(data.token, data.user);
       navigate("/timeline", { replace: true });
     },
