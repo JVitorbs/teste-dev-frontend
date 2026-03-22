@@ -1,73 +1,155 @@
-# React + TypeScript + Vite
+# Mini Twitter Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend do projeto Mini Twitter, desenvolvido com React + TypeScript, focado em autenticacao, timeline paginada, interacoes em posts e experiencia responsiva (desktop/mobile).
 
-Currently, two official plugins are available:
+## Visao Geral
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Este app consome a API do projeto e entrega os fluxos principais:
 
-## React Compiler
+- cadastro e login
+- protecao de rotas por sessao
+- timeline com busca
+- criacao, edicao e exclusao de posts
+- curtida/descurtida com atualizacao otimista
+- tema claro/escuro
+- toasts de feedback
+- menu lateral mobile com animacao
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+- React 19
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- React Hook Form
+- Zod
+- Axios
+- Tailwind CSS
+- Sonner (toasts)
+- Vitest + Testing Library
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Requisitos
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 20+
+- npm 10+
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Variaveis de ambiente
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Crie um arquivo `.env` (ou use o `docker-compose`) com:
+
+```bash
+VITE_API_URL=http://localhost:3000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Se nao definir, o frontend usa fallback para `http://localhost:3000`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Como rodar localmente
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
+
+Aplicacao: `http://localhost:5173`
+
+## Scripts
+
+- `npm run dev`: ambiente de desenvolvimento
+- `npm run build`: build de producao (TypeScript + Vite)
+- `npm run preview`: serve build local
+- `npm run lint`: lint do projeto
+- `npm run test`: testes em watch
+- `npm run test:run`: execucao unica dos testes
+
+## Estrutura principal
+
+```text
+src/
+  pages/
+    AuthPage.tsx
+    TimelinePage.tsx
+  components/
+    PostCard.tsx
+    PostComposer.tsx
+    ProtectedRoute.tsx
+    ThemeToggleButton.tsx
+    ui/
+  context/
+    AuthContext.tsx
+    ThemeContext.tsx
+  services/
+    auth.service.ts
+    post.service.ts
+  lib/
+    api.ts
+    storage.ts
+    error.ts
+  schemas/
+    auth.ts
+    post.ts
+  types/
+    api.ts
+```
+
+## Arquitetura resumida
+
+- `pages`: orquestram fluxo de tela
+- `components`: blocos de UI e interacao
+- `context`: estado global de sessao e tema
+- `services`: camada de acesso a API
+- `lib/api.ts`: cliente HTTP com interceptor de token
+- `schemas`: validacao de formularios
+- `types`: contratos TypeScript da API
+
+## Rotas
+
+- Publica:
+  - `/auth`
+- Protegidas:
+  - `/`
+  - `/timeline`
+
+Rotas protegidas usam `ProtectedRoute` e redirecionam para `/auth` quando nao autenticado.
+
+## Qualidade e testes
+
+Cobertura de testes em:
+
+- paginas
+- componentes
+- contexts
+- services
+- libs
+- schemas
+
+Para rodar tudo:
+
+```bash
+npm run test:run
+```
+
+## Documentacao tecnica detalhada
+
+Consulte a pasta `docs/`:
+
+- `docs/README.md`
+- `docs/01-visao-geral-frontend.md`
+- `docs/pages/app-routing.md`
+- `docs/pages/auth-page.md`
+- `docs/pages/timeline-page.md`
+- `docs/componentes-compartilhados.md`
+
+## Integracao com Docker
+
+Este frontend pode ser executado via `docker compose` na raiz do workspace (`teste-dev-frontend`) junto com o backend.
+
+```bash
+docker compose up --build -d
+```
+
+## Status atual
+
+- Fluxos principais implementados
+- Testes do frontend passando
+- Documentacao tecnica por pagina disponivel
