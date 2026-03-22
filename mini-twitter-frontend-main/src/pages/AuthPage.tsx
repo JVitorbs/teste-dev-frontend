@@ -67,8 +67,11 @@ export const AuthPage = () => {
         <div className="animate-pulse-soft absolute -bottom-24 right-2 h-56 w-56 rounded-full bg-cyan-200/50 blur-3xl dark:bg-cyan-700/25" />
 
         <div className="relative">
-          <Badge variant="secondary" className="mb-5 uppercase tracking-[0.14em] text-[var(--tw-brand)]">
-            Mini Twitter
+          <Badge
+            variant="secondary"
+            className="mb-5 border-slate-200/70 bg-white/90 px-3 py-1 shadow-sm backdrop-blur-sm dark:border-slate-300/70 dark:bg-slate-50/95"
+          >
+            <img src="/logo_minitt.png" alt="Mini Twitter" className="h-10 w-auto" />
           </Badge>
           <h1 className="max-w-md text-4xl font-extrabold leading-tight md:text-5xl">Converse com a comunidade em tempo real.</h1>
           <p className="mt-4 max-w-md text-sm leading-6 text-[var(--tw-muted)] md:text-base">
