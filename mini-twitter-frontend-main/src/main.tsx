@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { Toaster } from "./components/ui/sonner";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
           <BrowserRouter>
             <App />
+            <Toaster position="top-center" richColors />
           </BrowserRouter>
         </AuthProvider>
       </ThemeProvider>

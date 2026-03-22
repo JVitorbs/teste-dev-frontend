@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PostCard } from "../PostCard";
-import type { PostItem, User } from "../types/api";
+import type { PostItem, User } from "../../types/api";
 
 const postMock: PostItem = {
   id: 10,

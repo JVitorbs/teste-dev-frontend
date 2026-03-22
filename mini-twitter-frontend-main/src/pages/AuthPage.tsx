@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import { getApiError } from "../lib/error";
 import { loginSchema, registerSchema, type LoginSchema, type RegisterSchema } from "../schemas/auth";
@@ -32,6 +33,7 @@ export const AuthPage = () => {
   const registerMutation = useMutation({
     mutationFn: authService.register,
     onSuccess: () => {
+      toast.success("Conta criada com sucesso.");
       setApiMessage("Conta criada com sucesso. Agora faca login.");
       setMode("login");
       registerForm.reset();
@@ -49,6 +51,7 @@ export const AuthPage = () => {
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
+      toast.success(`Bem-vindo, ${data.user.name}!`);
       setSession(data.token, data.user);
       navigate("/timeline", { replace: true });
     },
@@ -64,8 +67,11 @@ export const AuthPage = () => {
         <div className="animate-pulse-soft absolute -bottom-24 right-2 h-56 w-56 rounded-full bg-cyan-200/50 blur-3xl dark:bg-cyan-700/25" />
 
         <div className="relative">
-          <Badge variant="secondary" className="mb-5 uppercase tracking-[0.14em] text-[var(--tw-brand)]">
-            Mini Twitter
+          <Badge
+            variant="secondary"
+            className="mb-5 border-slate-200/70 bg-white/90 px-3 py-1 shadow-sm backdrop-blur-sm dark:border-slate-300/70 dark:bg-slate-50/95"
+          >
+            <img src="/logo_minitt.png" alt="Mini Twitter" className="h-10 w-auto" />
           </Badge>
           <h1 className="max-w-md text-4xl font-extrabold leading-tight md:text-5xl">Converse com a comunidade em tempo real.</h1>
           <p className="mt-4 max-w-md text-sm leading-6 text-[var(--tw-muted)] md:text-base">

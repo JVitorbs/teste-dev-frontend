@@ -17,17 +17,17 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-vi.mock("../context/AuthContext", () => ({
+vi.mock("../../context/AuthContext", () => ({
   useAuth: () => ({
     setSession: setSessionMock,
   }),
 }));
 
-vi.mock("../components/ThemeToggleButton", () => ({
+vi.mock("../../components/ThemeToggleButton", () => ({
   ThemeToggleButton: () => <button type="button">Tema</button>,
 }));
 
-vi.mock("../services/auth.service", () => ({
+vi.mock("../../services/auth.service", () => ({
   authService: {
     login: (...args: unknown[]) => loginMock(...args),
     register: (...args: unknown[]) => registerMock(...args),
@@ -71,13 +71,10 @@ describe("AuthPage", () => {
     await user.click(screen.getByRole("button", { name: "Entrar" }));
 
     await waitFor(() => {
-      expect(loginMock).toHaveBeenCalledWith(
-        {
-          email: "alice@example.com",
-          password: "password123",
-        },
-        expect.any(Object),
-      );
+      expect(loginMock).toHaveBeenCalledWith({
+        email: "alice@example.com",
+        password: "password123",
+      }, expect.any(Object));
     });
 
     expect(setSessionMock).toHaveBeenCalledWith("jwt-1", {

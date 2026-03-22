@@ -4,7 +4,7 @@ import { ThemeToggleButton } from "../ThemeToggleButton";
 
 const useThemeMock = vi.fn();
 
-vi.mock("../context/ThemeContext", () => ({
+vi.mock("../../context/ThemeContext", () => ({
   useTheme: () => useThemeMock(),
 }));
 
