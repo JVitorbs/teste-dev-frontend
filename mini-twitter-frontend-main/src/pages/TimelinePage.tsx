@@ -154,7 +154,7 @@ export const TimelinePage = () => {
     <main className="mx-auto min-h-screen w-full max-w-7xl px-2 py-2 md:px-4 md:py-4">
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[260px,1fr,280px]">
         <aside className="surface sticky top-4 hidden h-[calc(100vh-2rem)] rounded-3xl p-5 md:block">
-          <p className="text-2xl font-extrabold">Mini Twitter</p>
+          <img src="/logo_minitt.png" alt="Mini Twitter" className="h-10 w-auto" />
           <p className="mt-1 text-sm text-[var(--tw-muted)]">{user ? `@${user.name.toLowerCase().replace(/\s+/g, "")}` : "Comunidade aberta"}</p>
 
           <div className="mt-6 space-y-2">
