@@ -41,7 +41,7 @@ vi.mock("@tanstack/react-query", () => {
   };
 });
 
-vi.mock("../context/AuthContext", () => ({
+vi.mock("../../context/AuthContext", () => ({
   useAuth: () => ({
     user: { id: 1, name: "Alice", email: "alice@example.com" },
     isAuthenticated: true,
@@ -49,18 +49,18 @@ vi.mock("../context/AuthContext", () => ({
   }),
 }));
 
-vi.mock("../context/ThemeContext", () => ({
+vi.mock("../../context/ThemeContext", () => ({
   useTheme: () => ({
     theme: "light",
     toggleTheme: vi.fn(),
   }),
 }));
 
-vi.mock("../services/auth.service", () => ({
+vi.mock("../../services/auth.service", () => ({
   authService: { logout: vi.fn().mockResolvedValue(undefined) },
 }));
 
-vi.mock("../services/post.service", () => {
+vi.mock("../../services/post.service", () => {
   const mockPost = {
     id: 1,
     title: "Test Post",

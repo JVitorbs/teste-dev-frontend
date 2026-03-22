@@ -6,7 +6,7 @@ const setTokenMock = vi.fn();
 const setUserMock = vi.fn();
 const clearSessionMock = vi.fn();
 
-vi.mock("../lib/storage", () => ({
+vi.mock("../../lib/storage", () => ({
   storage: {
     getToken: () => null,
     getUser: () => null,

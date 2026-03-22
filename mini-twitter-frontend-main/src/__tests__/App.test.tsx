@@ -2,15 +2,15 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import App from "../App";
 
-vi.mock("./pages/AuthPage", () => ({
+vi.mock("../pages/AuthPage", () => ({
   AuthPage: () => <div>Auth Page Mock</div>,
 }));
 
-vi.mock("./pages/TimelinePage", () => ({
+vi.mock("../pages/TimelinePage", () => ({
   TimelinePage: () => <div>Timeline Page Mock</div>,
 }));
 
-vi.mock("./components/ProtectedRoute", () => ({
+vi.mock("../components/ProtectedRoute", () => ({
   ProtectedRoute: () => <>{"Protected Outlet Mock"}</>,
 }));
 
