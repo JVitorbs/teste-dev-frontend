@@ -15,14 +15,14 @@ vi.mock("../components/ProtectedRoute", () => ({
 }));
 
 describe("App routes", () => {
-  it("renderiza timeline na rota raiz", () => {
+  it("protege a rota raiz com ProtectedRoute", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <App />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Timeline Page Mock")).toBeInTheDocument();
+    expect(screen.getByText("Protected Outlet Mock")).toBeInTheDocument();
   });
 
   it("renderiza auth na rota /auth", () => {
