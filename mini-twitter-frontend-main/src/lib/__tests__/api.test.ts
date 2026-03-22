@@ -22,7 +22,7 @@ vi.mock("axios", () => ({
   },
 }));
 
-vi.mock("./storage", () => ({
+vi.mock("../storage", () => ({
   storage: {
     getToken: getTokenMock,
   },

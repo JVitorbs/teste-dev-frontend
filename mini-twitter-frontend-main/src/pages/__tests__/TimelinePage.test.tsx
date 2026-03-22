@@ -41,7 +41,7 @@ vi.mock("@tanstack/react-query", () => {
   };
 });
 
-vi.mock("../context/AuthContext", () => ({
+vi.mock("../../context/AuthContext", () => ({
   useAuth: () => ({
     user: { id: 1, name: "Alice", email: "alice@example.com" },
     isAuthenticated: true,
@@ -49,18 +49,18 @@ vi.mock("../context/AuthContext", () => ({
   }),
 }));
 
-vi.mock("../context/ThemeContext", () => ({
+vi.mock("../../context/ThemeContext", () => ({
   useTheme: () => ({
     theme: "light",
     toggleTheme: vi.fn(),
   }),
 }));
 
-vi.mock("../services/auth.service", () => ({
+vi.mock("../../services/auth.service", () => ({
   authService: { logout: vi.fn().mockResolvedValue(undefined) },
 }));
 
-vi.mock("../services/post.service", () => {
+vi.mock("../../services/post.service", () => {
   const mockPost = {
     id: 1,
     title: "Test Post",
@@ -173,6 +173,21 @@ describe("TimelinePage", () => {
     expect(screen.getByRole("button", { name: "Limpar busca" })).toBeInTheDocument();
   });
 
+  it("abre menu mobile e mostra opcao de sair", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <TimelinePage />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Abrir menu" }));
+
+    expect(screen.getByRole("button", { name: "Fechar menu" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Sair" }).length).toBeGreaterThan(0);
+  });
+
   it("renderiza botão sair para usuario autenticado", async () => {
     render(
       <MemoryRouter>
@@ -218,7 +233,7 @@ describe("TimelinePage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Mini Twitter")).toBeInTheDocument();
+    expect(screen.getByAltText("Mini Twitter")).toBeInTheDocument();
     expect(screen.getByText("Timeline")).toBeInTheDocument();
     expect(screen.getByText("Destaques")).toBeInTheDocument();
   });
