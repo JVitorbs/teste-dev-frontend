@@ -87,6 +87,33 @@ npm install
 npm run dev
 ```
 
+## Credenciais para teste
+
+Use os usuarios abaixo para testar login no sistema:
+
+- Alice Silva
+  - email: `alice@example.com`
+  - password: `password123`
+- Bob Santos
+  - email: `bob@example.com`
+  - password: `password123`
+- Charlie Oliveira
+  - email: `charlie@example.com`
+  - password: `password123`
+
+## Imagens do sistema
+
+### Logo do projeto
+
+![Logo Mini Twitter](mini-twitter-frontend-main/public/logo_minitt.png)
+
+### Login e timeline por tema
+
+| Tela | Tema claro | Tema escuro |
+| --- | --- | --- |
+| Login | ![Login tema claro](docs/images/login-light.png) | ![Login tema escuro](docs/images/login-dark.png) |
+| Timeline | ![Timeline tema claro](docs/images/timeline-light.png) | ![Timeline tema escuro](docs/images/timeline-dark.png) |
+
 ## Documentacao
 
 ### Frontend (tecnica detalhada)
